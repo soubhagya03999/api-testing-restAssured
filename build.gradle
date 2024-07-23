@@ -18,16 +18,16 @@ repositories {
 }
 
 dependencies {
-
-    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
-   
-    // https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager
-    implementation 'io.github.bonigarcia:webdrivermanager:5.5.3'
-
-    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
-    implementation 'org.seleniumhq.selenium:selenium-java:4.14.0'
-
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation 'com.google.guava:guava:33.2.1-jre'
+    // https://mvnrepository.com/artifact/org.testng/testng
+    testImplementation 'org.testng:testng:7.10.2'
+    // https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+    testImplementation 'io.rest-assured:rest-assured:5.4.0'
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation 'org.slf4j:slf4j-nop:2.0.7'
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation 'org.json:json:20240303'
 }
 
 //task startScript(type:Exec) {
@@ -39,3 +39,30 @@ dependencies {
 //test.dependsOn startScript
 
 mainClassName = 'demo.App'
+
+test {
+    // Use TestNG for unit tests.
+    useTestNG() {
+    suites 'src\\test\\java\\resource\\TestNG.xml'
+   }
+    afterSuite { desc, result ->
+            if (!desc.parent) {
+                println "\nTEST RESULT: ${result.resultType}"
+                println "TEST SUMMARY: RAN ${result.testCount} TESTS, " +
+                        "${result.successfulTestCount} SUCCEEDED, " +
+                        "${result.failedTestCount} FAILED, " +
+                        "${result.skippedTestCount} SKIPPED"
+            }
+    }
+
+    testLogging {
+		events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+        exceptionFormat = 'full'
+
+        // Optionally do:
+        showStackTraces = true
+	}
+
+    testLogging.showStandardStreams = true
+    test.outputs.upToDateWhen {false}
+}
